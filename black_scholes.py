@@ -9,7 +9,7 @@ class BlackScholes:
 
 
     @staticmethod
-    def call_price(S: float, K: float, sigma: float, r: float, t: float, q: float=0.0):
+    def call_price(S: float, K: float, sigma: float, r: float, T: float, q: float=0.0):
 
         """
         Calculate the theoretical call price of the European style option
@@ -18,19 +18,19 @@ class BlackScholes:
         K: Strike price (22.75 represents $22.75)
         sigma: volatility (0.50 represents 50%)
         r: continuously compounded risk-free interest rate (0.05 represents 5%)
-        t: time to expiration (3.5 represents 3.5yrs)
+        T: time to expiration (3.5 represents 3.5yrs)
         q: continuously compounded dividend yield (0.05 represents 5%) (optional: 0.0)
         """
 
-        d1 = (np.log(S / K) + t * (r - q + (sigma * sigma) / 2)) / (sigma * np.sqrt(t))
-        d2 = d1 - sigma * np.sqrt(t)
+        d1 = (np.log(S / K) + T * (r - q + (sigma * sigma) / 2)) / (sigma * np.sqrt(T))
+        d2 = d1 - sigma * np.sqrt(T)
 
-        C = S * np.exp(-(q * t)) * norm.cdf(d1) - K * np.exp(-(r * t)) * norm.cdf(d2)
+        C = S * np.exp(-(q * T)) * norm.cdf(d1) - K * np.exp(-(r * T)) * norm.cdf(d2)
         
-        return f"${C:.2f}"
+        return C
     
     @staticmethod
-    def put_price(S: float, K: float, sigma: float, r: float, t: float, q: float=0.0):
+    def put_price(S: float, K: float, sigma: float, r: float, T: float, q: float=0.0):
 
         """
         Calculate the theoretical put price of the European style option
@@ -39,16 +39,13 @@ class BlackScholes:
         K: Strike price
         sigma: volatility
         r: continuously compounded risk-free interest rate
-        t: time to expiration
+        T: time to expiration
         q: continuously compounded dividend yield (optional: 1.0)
         """
 
-        d1 = (np.log(S / K) + t * (r - q + (sigma * sigma) / 2)) / (sigma * np.sqrt(t))
-        d2 = d1 - sigma * np.sqrt(t)
+        d1 = (np.log(S / K) + T * (r - q + (sigma * sigma) / 2)) / (sigma * np.sqrt(T))
+        d2 = d1 - sigma * np.sqrt(T)
 
-        P = K * np.exp(-(r * t)) * norm.cdf(-d2) - S * np.exp(-(q * t)) * norm.cdf(-d1)
+        P = K * np.exp(-(r * T)) * norm.cdf(-d2) - S * np.exp(-(q * T)) * norm.cdf(-d1)
         
-        return f"${P:.2f}"
-    
-print(BlackScholes.call_price(31.55, 22.75, 0.5, 0.05, 3.5, 0.05))
-print(BlackScholes.put_price(31.55, 22.75, 0.5, 0.05, 3.5, 0.05))
+        return P
